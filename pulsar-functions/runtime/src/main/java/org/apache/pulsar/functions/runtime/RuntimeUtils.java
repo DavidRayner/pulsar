@@ -132,6 +132,8 @@ public class RuntimeUtils {
                                                 AuthenticationConfig authConfig,
                                                 String originalCodeFileName,
                                                 String pulsarServiceUrl,
+                                                String secretsProviderClassName,
+                                                String secretsProviderConfig,
                                                 boolean k8sRuntime) throws IOException {
         final List<String> args = new LinkedList<>();
         GoInstanceConfig goInstanceConfig = new GoInstanceConfig();
@@ -268,6 +270,14 @@ public class RuntimeUtils {
             goInstanceConfig.setMetricsPort(instanceConfig.getMetricsPort());
         }
 
+        if (secretsProviderClassName != null) {
+            goInstanceConfig.setSecretsProviderClassName(secretsProviderClassName);
+        }
+
+        if (secretsProviderConfig != null) {
+            goInstanceConfig.setSecretsProviderConfig(secretsProviderConfig);
+        }
+
         goInstanceConfig.setKillAfterIdleMs(0);
         goInstanceConfig.setPort(instanceConfig.getPort());
 
@@ -311,7 +321,8 @@ public class RuntimeUtils {
 
         if (instanceConfig.getFunctionDetails().getRuntime() == Function.FunctionDetails.Runtime.GO) {
             return getGoInstanceCmd(instanceConfig, authConfig,
-                    originalCodeFileName, pulsarServiceUrl, k8sRuntime);
+                originalCodeFileName, pulsarServiceUrl,
+                secretsProviderClassName, secretsProviderConfig, k8sRuntime);
         }
 
         if (instanceConfig.getFunctionDetails().getRuntime() == Function.FunctionDetails.Runtime.JAVA) {
